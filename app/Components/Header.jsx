@@ -18,7 +18,7 @@ const Header = () => {
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="fixed top-8 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-[700px] animate-fade-in"
+        className="fixed top-8 left-1/2 transform -translate-x-1/2 z-500 w-[90%] max-w-[700px] animate-fade-in"
         style={{ animationDelay: '0.2s' }}
       >
         <nav className="flex items-center justify-between px-6 py-3 bg-[#F8EDE3] text-[#8D493A] rounded-md shadow-lg backdrop-blur-sm">
