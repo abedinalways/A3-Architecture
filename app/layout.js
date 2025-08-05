@@ -25,9 +25,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${inter.className} ${archivo.className} antialiased`}>
-        <Banner/>
+        <Banner />
         <Header />
-        <main>{children}</main>
+        <main >{children}</main>
       </body>
     </html>
   );
