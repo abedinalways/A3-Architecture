@@ -3,6 +3,7 @@ import About from "./Components/About";
 import Banner from "./Components/Banner";
 import DemoProjects from "./Components/DemoProjects";
 import Design from "./Components/Design";
+import Services from "./Components/Services";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <Design  className='w-full mx-auto'/>
      
       <DemoProjects />
+      <Services/>
     </div>
   );
 }
