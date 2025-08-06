@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 export default function Banner() {
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="relative h-screen w-full overflow-hidden font-[archivo]">
       {/* Background image */}
       <div className="absolute inset-0">
         <img

@@ -2,7 +2,8 @@
 import {  Archivo, Inter } from "next/font/google";
 import "./globals.css";
 import Header from "./Components/Header";
-import Banner from "./Components/Banner";
+
+import Footer from "./Components/Footer";
 
 
 
@@ -25,10 +26,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${inter.className} ${archivo.className} antialiased`}>
-        <Banner />
-        <Header />
-        <main >{children}</main>
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );
 }
+

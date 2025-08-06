@@ -8,7 +8,7 @@ const Header = () => {
   const menuItems = [
     { name: 'About', href: '#about' },
     { name: 'Projects', href: '#projects' },
-    { name: 'News', href: '#news' },
+    { name: 'News', href: '/news' },
   ];
 
   return (
