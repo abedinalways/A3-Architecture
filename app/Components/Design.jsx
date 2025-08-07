@@ -1,10 +1,16 @@
 'use client';
 
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useMotionValue,
+} from 'framer-motion';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
-// Enhanced image properties with more sophisticated positioning
+
 const images = [
   {
     src: '/images/design/image01.png',
@@ -74,6 +80,142 @@ const images = [
   },
 ];
 
+
+function AnimatedTitle({ progress }) {
+  const title = 'Transforming spaces with style,';
+  const subtitle = "through Troscán's exquisite design expertise.";
+  const words = title.split(' ');
+
+  const textFadeInRange = [0.35, 0.55];
+  const textFadeOutRange = [0.8, 1];
+
+  const opacity = useTransform(
+    progress,
+    [
+      0,
+      textFadeInRange[0],
+      textFadeInRange[1],
+      textFadeOutRange[0],
+      textFadeOutRange[1],
+    ],
+    [0, 0, 1, 1, 0]
+  );
+  const y = useTransform(progress, textFadeInRange, ['3rem', '0rem']);
+
+  const containerVariants = {
+    visible: { transition: { staggerChildren: 0.08 } },
+  };
+
+  const wordVariants = {
+    hidden: { opacity: 0, y: 20, filter: 'blur(8px)' },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      transition: { duration: 0.5, ease: 'easeOut' },
+    },
+  };
+
+  return (
+    <motion.div
+      style={{ opacity, y }}
+      className="absolute inset-0 flex items-center justify-center z-10 text-center"
+    >
+      <div className="max-w-4xl px-6 pointer-events-none">
+        <motion.h2
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="text-4xl md:text-6xl font-serif font-light text-black leading-tight tracking-wide"
+          style={{ textShadow: '0 4px 15px rgba(0,0,0,0.1)' }}
+        >
+          {words.map((word, i) => (
+            <motion.span
+              key={i}
+              variants={wordVariants}
+              className="inline-block mr-[0.25em]"
+            >
+              {word}
+            </motion.span>
+          ))}
+        </motion.h2>
+        <motion.p
+          className="mt-4 text-lg md:text-xl text-[#5A5247] font-light max-w-2xl mx-auto leading-relaxed"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 1 }}
+        >
+          {subtitle}
+        </motion.p>
+      </div>
+    </motion.div>
+  );
+}
+
+
+function AnimatedImage({ img, progress }) {
+  const imageSlideInRange = [0, 0.4];
+  const parallaxRange = [0.4, 1];
+
+ 
+  const opacity = useTransform(progress, [0, 0.1, 0.8, 1], [0, 1, 1, 0]);
+
+ 
+  const scale = useTransform(
+    progress,
+    [0, 0.4, 0.8, 1],
+    [0.6, img.scale, img.scale, 0.5]
+  );
+
+  const x = useTransform(progress, imageSlideInRange, [
+    img.initialX,
+    img.finalX,
+  ]);
+  const y = useTransform(progress, imageSlideInRange, [
+    img.initialY,
+    img.finalY,
+  ]);
+  const dynamicRotation = useTransform(progress, imageSlideInRange, [
+    img.rotation * 2,
+    img.rotation,
+  ]);
+  const parallaxY = useTransform(progress, parallaxRange, [0, -img.parallax]);
+
+  return (
+    <motion.div
+      style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        translateX: '-50%',
+        translateY: '-50%',
+        x,
+        y,
+        opacity,
+        scale,
+        rotate: dynamicRotation,
+        zIndex: img.zIndex,
+      }}
+      className="w-[280px] h-[380px] md:w-[350px] md:h-[450px]"
+    >
+      <motion.div style={{ y: parallaxY }} className="w-full h-full">
+        <div className="relative w-full h-full group overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/10">
+          <Image
+            src={img.src}
+            alt={`Design showcase by Troscán`}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 768px) 280px, 350px"
+            priority={img.zIndex > 3}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/10" />
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+
 export default function DesignSection() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
@@ -81,186 +223,80 @@ export default function DesignSection() {
     offset: ['start start', 'end end'],
   });
 
-  // Smooth spring configurations
-  const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 };
-  const smoothProgress = useSpring(scrollYProgress, springConfig);
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 80,
+    damping: 40,
+    restDelta: 0.001,
+  });
 
-  // Enhanced animation ranges with more nuanced timing
-  const imageSlideInRange = [0, 0.4];
-  const textFadeInRange = [0.35, 0.55];
-  const textExitRange = [0.8, 1];
-  const parallaxRange = [0.4, 1];
-  const rotationRange = [0.4, 1];
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
 
-  // Sophisticated transforms for the title
-  const textOpacity = useTransform(
-    smoothProgress,
-    [0, 0.35, 0.55, 0.8, 1],
-    [0, 0, 1, 1, 0]
-  );
-  const textY = useTransform(smoothProgress, textFadeInRange, ['3rem', '0rem']);
-  const textScale = useTransform(
-    smoothProgress,
-    [0.35, 0.45, 0.55],
-    [0.95, 1.02, 1]
-  );
+  useEffect(() => {
+    const handleMouseMove = e => {
+      if (!containerRef.current) return;
+      const { clientX, clientY } = e;
+      const { left, top, width, height } =
+        containerRef.current.getBoundingClientRect();
+      mouseX.set((clientX - left) / width - 0.5);
+      mouseY.set((clientY - top) / height - 0.5);
+    };
 
-  // Background gradient animation
-  const backgroundOpacity = useTransform(
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
+
+  const rotateX = useTransform(mouseY, [-0.5, 0.5], ['7deg', '-7deg']);
+  const rotateY = useTransform(mouseX, [-0.5, 0.5], ['-7deg', '7deg']);
+
+  // --- NEW: Dynamic background glow transforms ---
+  const glowOpacity = useTransform(
     smoothProgress,
-    [0, 0.2, 0.8, 1],
-    [1, 0.95, 0.95, 0.9]
+    [0, 0.25, 0.75, 1],
+    [0, 0.5, 0.5, 0]
   );
+  const glowScale = useTransform(smoothProgress, [0, 1], [0.5, 2.5]);
+  const glowX = useTransform(smoothProgress, [0, 1], ['-100%', '100%']);
 
   return (
-    <section ref={containerRef} className="relative h-[350vh]">
-      {/* Dynamic background with subtle gradient */}
-      <motion.div
-        style={{ opacity: backgroundOpacity }}
-        className="sticky top-0 h-screen bg-[#F8EDE3]"
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent" />
-
-        <div className="relative h-full flex items-center justify-center overflow-hidden">
-          {/* Enhanced container for images */}
-          <div className="relative w-full max-w-[1600px] h-[900px]">
-            {images.map((img, index) => {
-              // Smooth slide-in animations with easing
-              const x = useTransform(smoothProgress, imageSlideInRange, [
-                img.initialX,
-                img.finalX,
-              ]);
-              const y = useTransform(smoothProgress, imageSlideInRange, [
-                img.initialY,
-                img.finalY,
-              ]);
-              const opacity = useTransform(
-                smoothProgress,
-                [0, 0.1, 0.4],
-                [0, 0.3, 1]
-              );
-              const scale = useTransform(smoothProgress, imageSlideInRange, [
-                0.7,
-                img.scale,
-              ]);
-
-              // Enhanced parallax with rotation
-              const parallaxY = useTransform(smoothProgress, parallaxRange, [
-                0,
-                -img.parallax,
-              ]);
-              const dynamicRotation = useTransform(
-                smoothProgress,
-                rotationRange,
-                [img.rotation, img.rotation * 0.7]
-              );
-
-              // Subtle hover-like scaling effect based on scroll
-              const hoverScale = useTransform(
-                smoothProgress,
-                [0.5, 0.7, 1],
-                [1, 1.05, 1]
-              );
-
-              return (
-                <motion.div
-                  key={img.src}
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    x,
-                    y,
-                    opacity,
-                    scale,
-                    rotate: dynamicRotation,
-                    zIndex: img.zIndex,
-                  }}
-                  className="w-[380px] h-[380px]"
-                >
-                  <motion.div
-                    style={{
-                      y: parallaxY,
-                      scale: hoverScale,
-                    }}
-                    className="w-full h-full"
-                  >
-                    <div className="relative w-full h-full group">
-                      {/* Enhanced shadow and border effects */}
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-black/10 rounded-2xl transform rotate-1" />
-                      <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/5">
-                        <Image
-                          src={img.src}
-                          alt={`Design showcase ${index + 1}`}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-105"
-                          sizes="(max-width: 768px) 300px, 380px"
-                          priority={index < 3}
-                        />
-                        {/* Subtle overlay for depth */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/10" />
-                      </div>
-                    </div>
-                  </motion.div>
-                </motion.div>
-              );
-            })}
-          </div>
-
-          {/* Enhanced animated title with better typography */}
-          <motion.div
-            style={{
-              opacity: textOpacity,
-              y: textY,
-              scale: textScale,
-            }}
-            className="absolute inset-0 flex items-center justify-center z-10"
-          >
-            <div className="text-center max-w-4xl px-6">
-              {/* Background blur for text readability */}
-              <div className="absolute inset-0 bg-white/30 backdrop-blur-sm rounded-3xl" />
-              <div className="relative">
-                <motion.h2
-                  className="text-4xl md:text-7xl lg:text-8xl font-light text-[#2C2922] leading-tight tracking-wide"
-                  style={{
-                    fontFamily: 'Georgia, serif',
-                    textShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  }}
-                >
-                  <span className="block mb-2">Transforming</span>
-                  <span className="block text-[#8B7355] italic font-normal">
-                    spaces
-                  </span>
-                  <span className="block mt-2">with style</span>
-                </motion.h2>
-                <motion.p
-                  className="mt-6 text-lg md:text-xl text-[#5A5247] font-light max-w-2xl mx-auto leading-relaxed"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5, duration: 1 }}
-                >
-                  Through Troscán's exquisite design expertise
-                </motion.p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Decorative elements */}
+    <section
+      ref={containerRef}
+      className="relative overflow-hidden"
+    >
+      <div className="sticky top-0 h-screen w-full">
+       
         <motion.div
+          className="absolute inset-0 z-0 opacity-50"
           style={{
-            opacity: useTransform(
-              smoothProgress,
-              [0, 0.3, 0.7, 1],
-              [0, 1, 1, 0]
-            ),
-            scale: useTransform(smoothProgress, [0, 1], [1, 1.2]),
+            x: glowX,
+            scale: glowScale,
+            opacity: glowOpacity,
+            background:
+              'radial-gradient(circle at center, rgba(139, 115, 85, 0.3), transparent 60%)',
+            filter: 'blur(100px)',
           }}
-          className="absolute top-1/2 left-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+        />
+
+        <motion.div
+          style={{ perspective: '1500px' }}
+          className="relative h-full w-full"
         >
-          <div className="w-full h-full rounded-full bg-gradient-radial from-[#8B7355]/20 via-transparent to-transparent blur-3xl" />
+          <motion.div
+            style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+            className="relative w-full h-full"
+          >
+            {images.map(img => (
+              <AnimatedImage
+                key={img.src}
+                img={img}
+                progress={smoothProgress}
+              />
+            ))}
+          </motion.div>
+
+          <AnimatedTitle progress={smoothProgress} />
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }

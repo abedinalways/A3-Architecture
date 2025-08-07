@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 
-
 const servicesData = [
   {
     id: 1,
@@ -38,7 +37,6 @@ const servicesData = [
   },
 ];
 
-
 const imageVariants = {
   initial: { opacity: 0, scale: 1.05 },
   animate: { opacity: 1, scale: 1 },
@@ -47,30 +45,24 @@ const imageVariants = {
 };
 
 export default function Services() {
-  
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
     <>
-      <div className="flex md:flex-wrap-reverse justify-end mt-10 mb-6 font-[archivo]">
-     
-          
-          <h1 className="text-[#8D493A] font-medium text-md tracking-wide uppercase">
-            Our Expartise
-          </h1>
+      <div className="flex flex-col md:flex-row md:flex-wrap-reverse justify-center md:justify-end mt-6 mb-4 md:mt-8 md:mb-6 font-[archivo] px-4 sm:px-6 lg:px-8">
         
-        <h1 className="text-3xl lg:text-5xl xl:text-6xl font-medium mr-4">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium md:mr-4 text-center md:text-right">
           <span className="text-[#8D493A] block">Selecting the ideal</span>
           <span className="text-[#8D493A] block">elements to elevate</span>
           <span className="text-[#8D493A] block">your space</span>
         </h1>
       </div>
 
-      <section className="font-[archivo] flex flex-col md:flex-row h-auto md:h-[70vh] min-h-[600px] w-full bg-[#F8EDE3] ">
-        <div className="relative w-full md:w-1/2 h-[300px] md:h-full">
+      <section className="font-[archivo] flex flex-col md:flex-row w-full bg-[#F8EDE3] min-h-[400px] sm:min-h-[500px] md:min-h-[600px]">
+        <div className="relative w-full md:w-1/2 h-[250px] sm:h-[300px] md:h-[70vh] lg:h-[80vh]">
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeIndex} // Change in key triggers the animation
+              key={activeIndex}
               variants={imageVariants}
               initial="initial"
               animate="animate"
@@ -82,40 +74,39 @@ export default function Services() {
                 src={servicesData[activeIndex].imageSrc}
                 alt={servicesData[activeIndex].title}
                 fill
-                className="object-cover w-[70%] rounded-xl ml-10 mb-5"
+                className="object-cover w-full md:w-[80%] rounded-xl mx-auto md:ml-6 lg:ml-10 mb-4 md:mb-5"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 50vw"
+                priority
               />
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* RIGHT COLUMN: Services List */}
-        <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-16">
+        <div className="w-full md:w-1/2 flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16">
           <ul className="w-full max-w-md space-y-2">
             {servicesData.map((service, index) => (
               <li
                 key={service.id}
                 onMouseEnter={() => setActiveIndex(index)}
-                className="relative cursor-pointer py-4 border-b border-gray-200/70"
+                onClick={() => setActiveIndex(index)} // Added for touch support
+                className="relative cursor-pointer py-3 sm:py-4 border-b border-gray-200/70"
               >
-                {/* Animated highlight bar */}
                 <motion.div
                   initial={false}
                   animate={{ width: activeIndex === index ? '100%' : '0%' }}
                   transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                   className="absolute left-0 top-0 h-full bg-[#8C3A3A] z-0"
                 />
-
-                {/* Text content */}
-                <div className="relative z-10 flex items-center space-x-6">
+                <div className="relative z-10 flex items-center space-x-4 sm:space-x-6">
                   <span
-                    className={`text-sm font-light transition-colors duration-500 ${
+                    className={`text-xs sm:text-sm font-light transition-colors duration-500 ${
                       activeIndex === index ? 'text-gray-200' : 'text-gray-400'
                     }`}
                   >
                     0{service.id}
                   </span>
                   <h3
-                    className={`text-xl md:text-2xl transition-colors duration-500 ${
+                    className={`text-lg sm:text-xl md:text-2xl transition-colors duration-500 ${
                       activeIndex === index ? 'text-white' : 'text-gray-800'
                     }`}
                   >

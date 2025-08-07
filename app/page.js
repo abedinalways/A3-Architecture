@@ -4,6 +4,7 @@ import Banner from "./Components/Banner";
 import ContactCTA from "./Components/ContactCTA";
 import DemoProjects from "./Components/DemoProjects";
 import Design from "./Components/Design";
+import NewsSection from "./Components/NewsSection";
 import Services from "./Components/Services";
 
 export default function Home() {
@@ -12,11 +13,12 @@ export default function Home() {
       <Banner />
       <About />
      
-      <Design  className='w-full mx-auto'/>
+      <Design  className='w-full mx-auto font-[archivo]'/>
      
       <DemoProjects />
       <Services />
-      <ContactCTA/>
+      <ContactCTA />
+      <NewsSection/>
     </div>
   );
 }
