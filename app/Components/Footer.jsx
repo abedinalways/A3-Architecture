@@ -65,6 +65,8 @@ const Footer = () => {
           </ul>
         </div>
       </div>
+      <hr className="w-full mx-auto my-4" />
+      <p className='text-center font-[archivo]'>© 2025, All rights reserved</p>
     </footer>
   );
 };
